@@ -11,11 +11,20 @@
         <div class="detail-images">
 
             {% if product.images %}
-            <img id="mainImage" src="{{ url_for('static', filename=product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}" class="main-img" alt="{{ product.title }}">
+            <img id="mainImage"
+                 src="{{ url_for('static', filename=product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}"
+                 class="main-img"
+                 alt="{{ product.title }}"
+                 data-fallback="{{ url_for('static', filename='images/logo.png') }}"
+                 onerror="this.src=this.dataset.fallback;">
 
             <div class="thumb-row">
                 {% for img in product.images %}
-                <img src="{{ url_for('static', filename=img.image_path|replace('/static/', '')|replace('static/', '')) }}" onclick="changeImage(this)" alt="{{ product.title }}">
+                <img src="{{ url_for('static', filename=img.image_path|replace('/static/', '')|replace('static/', '')) }}"
+                     onclick="changeImage(this)"
+                     alt="{{ product.title }}"
+                     data-fallback="{{ url_for('static', filename='images/logo.png') }}"
+                     onerror="this.src=this.dataset.fallback;">
                 {% endfor %}
             </div>
             {% else %}

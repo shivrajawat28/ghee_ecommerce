@@ -26,7 +26,10 @@
 
                 <td>
                     {% if product.images %}
-                        <img src="{{ url_for('static', filename=product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}" class="prod-thumb">
+                        <img src="{{ url_for('static', filename=product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}"
+                             class="prod-thumb"
+                             data-fallback="{{ url_for('static', filename='images/logo.png') }}"
+                             onerror="this.src=this.dataset.fallback;">
                     {% endif %}
                 </td>
 

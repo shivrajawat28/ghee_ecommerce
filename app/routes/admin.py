@@ -191,15 +191,27 @@ def delete_product(id):
         return redirect(url_for("auth.login"))
 
     product = Product.query.get_or_404(id)
+    from app.models.order import OrderItem
+    if OrderItem.query.filter_by(product_id=product.id).first():
+        flash("Cannot delete product linked to orders", "danger")
+        return redirect(url_for("admin.admin_products"))
 
     for img in product.images:
         image_rel = img.image_path.replace("static/", "").lstrip("/")
         file_path = os.path.join(current_app.root_path, "static", image_rel)
-        if os.path.exists(file_path):
-            os.remove(file_path)
+        try:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        except OSError:
+            pass
 
-    db.session.delete(product)
-    db.session.commit()
+    try:
+        db.session.delete(product)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        flash("Unable to delete product right now", "danger")
+        return redirect(url_for("admin.admin_products"))
 
     flash("Product Deleted", "success")
 

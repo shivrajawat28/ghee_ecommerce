@@ -12,7 +12,10 @@
 
             <a href="{{ url_for('product.product_detail', id=product.id) }}">
                 {% if product.images %}
-                <img src="{{ url_for('static', filename=product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}" alt="{{ product.title }}">
+                <img src="{{ url_for('static', filename=product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}"
+                     alt="{{ product.title }}"
+                     data-fallback="{{ url_for('static', filename='images/logo.png') }}"
+                     onerror="this.src=this.dataset.fallback;">
                 {% else %}
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="{{ product.title }}">
                 {% endif %}
