@@ -56,11 +56,15 @@ def create_payment(order_id):
         current_app.config.get('RAZORPAY_KEY_SECRET')
     ))
 
-    payment = client.order.create({
-        "amount": int(float(order.total_amount) * 100),
-        "currency": "INR",
-        "payment_capture": 1
-    })
+    try:
+        payment = client.order.create({
+            "amount": int(float(order.total_amount) * 100),
+            "currency": "INR",
+            "payment_capture": 1
+        })
+    except Exception as exc:
+        current_app.logger.warning("Razorpay create order failed: %s", exc)
+        return jsonify({"error": "Payment setup failed. Check Razorpay keys."}), 400
 
     order.razorpay_order_id = payment['id']
     db.session.commit()

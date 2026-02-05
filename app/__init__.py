@@ -17,7 +17,7 @@ def create_app():
     if not secret_key:
         secret_key = os.urandom(32)
         app.logger.warning("SECRET_KEY not set. Using a transient key.")
-    app.config["SECRET_KEY"] = secret_key
+    app.config["SECRET_KEY"] = "My_secret_key"
     database_url = os.environ.get("DATABASE_URL")
     if database_url:
         if database_url.startswith("postgres://"):
