@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Shop{% endblock %}
+
+{% block content %}
+
+<section class="shop-section">
+    <h2 class="shop-title">Our Products</h2>
+
+    <div class="shop-grid">
+        {% for product in products %}
+        <div class="shop-card">
+
+            <a href="{{ url_for('product.product_detail', id=product.id) }}">
+                {% if product.images %}
+                <img src="{{ url_for('static', filename=product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}" alt="{{ product.title }}">
+                {% else %}
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="{{ product.title }}">
+                {% endif %}
+            </a>
+            
+
+            <h3>{{ product.title }}</h3>
+            <p class="price">₹ {{ product.price }}</p>
+
+            <div class="qty-box">
+                <button onclick="decreaseQty(this)">−</button>
+                <input type="text" value="1" readonly>
+                <button onclick="increaseQty(this)">+</button>
+            </div>
+
+            <div class="shop-btns">
+                <form method="POST" action="{{ url_for('cart.add_cart', product_id=product.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="cart-btn">Add to Cart</button>
+                </form>
+                <form method="POST" action="{{ url_for('cart.buy_now', product_id=product.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="buy-btn">Buy Now</button>
+                </form>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+function increaseQty(btn){
+    let input = btn.parentElement.querySelector("input");
+    input.value = parseInt(input.value) + 1;
+}
+
+function decreaseQty(btn){
+    let input = btn.parentElement.querySelector("input");
+    if(input.value > 1){
+        input.value = parseInt(input.value) - 1;
+    }
+}
+</script>
+
+{% endblock %}

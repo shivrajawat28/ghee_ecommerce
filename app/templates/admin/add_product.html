@@ -1,0 +1,52 @@
+{% extends "admin/admin_base.html" %}
+
+{% block content %}
+
+<div class="add-product-wrapper">
+
+    <h1>Add New Product</h1>
+
+    <form method="POST" enctype="multipart/form-data" class="add-product-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label>Product Title</label>
+        <input type="text" name="title" required>
+
+        <label>Price (₹)</label>
+        <input type="number" step="0.01" name="price" required>
+
+        <label>Description</label>
+        <textarea name="description" rows="4" required></textarea>
+
+        <label>Stock Quantity</label>
+        <input type="number" name="stock" required>
+
+        <label>Upload Images</label>
+        <input type="file" name="images" multiple accept="image/*" onchange="previewImages(event)">
+
+        <div class="preview-area" id="previewArea"></div>
+
+        <button type="submit" class="add-btn">Add Product</button>
+
+    </form>
+
+</div>
+
+<script>
+function previewImages(event){
+    const preview = document.getElementById('previewArea');
+    preview.innerHTML = "";
+
+    for(let file of event.target.files){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            preview.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+
+{% endblock %}

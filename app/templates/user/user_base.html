@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='20260204') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+    <header class="user-header">
+
+        <div class="user-left">
+            <a href="{{ url_for('product.home') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" class="user-logo">
+            </a>
+            <span class="user-greet">Hey, {{ session.get('user_name') }}</span>
+        </div>
+
+        <nav class="user-nav" id="userNav">
+            <a href="{{ url_for('product.home') }}">Home</a>
+            <a href="{{ url_for('user.profile') }}">Profile</a>
+            <a href="{{ url_for('user.my_orders') }}">Orders</a>
+            <form method="POST" action="{{ url_for('auth.logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="link-button">Logout</button>
+            </form>
+        </nav>
+
+        <div class="user-hamburger" onclick="toggleUserNav()">☰</div>
+
+    </header>
+
+    <div class="user-container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        function toggleUserNav() {
+            document.getElementById("userNav").classList.toggle("show-user-nav");
+        }
+    </script>
+
+</body>
+
+</html>

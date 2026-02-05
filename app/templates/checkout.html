@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="checkout-container">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <h1>Checkout</h1>
+
+    <div class="checkout-wrapper">
+
+        <!-- LEFT : Address Form -->
+        <div class="checkout-form">
+            <h2>Shipping Details</h2>
+
+            <form method="POST" action="{{ url_for('order.place_order') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label>Full Name</label>
+                <input type="text" name="full_name" required>
+
+                <label>Phone</label>
+                <input type="text" name="phone" required>
+
+                <label>Address</label>
+                <textarea name="address" required></textarea>
+
+                <div class="row">
+                    <div>
+                        <label>City</label>
+                        <input type="text" name="city" required>
+                    </div>
+                    <div>
+                        <label>State</label>
+                        <input type="text" name="state" required>
+                    </div>
+                </div>
+
+                <label>Pincode</label>
+                <input type="text" name="pincode" required>
+
+                <button type="submit" class="place-order-btn">
+                    Continue to Payment
+                </button>
+            </form>
+        </div>
+
+        <!-- RIGHT : Order Summary -->
+        <div class="order-summary-box">
+            <h2>Order Summary</h2>
+
+            {% for item in cart.items %}
+            <div class="summary-item">
+                {% if item.product.images %}
+                <img src="{{ url_for('static', filename=item.product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}" alt="{{ item.product.title }}">
+                {% else %}
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="{{ item.product.title }}">
+                {% endif %}
+                <div>
+                    <p>{{ item.product.title }}</p>
+                    <small>Qty: {{ item.quantity }}</small>
+                </div>
+                <span>₹{{ item.product.price * item.quantity }}</span>
+            </div>
+            {% endfor %}
+
+            <hr>
+
+            <div class="total">
+                <strong>Total:</strong>
+                <strong>₹{{ total }}</strong>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // auto hide flash
+    setTimeout(() => {
+        document.querySelectorAll('.flash').forEach(f => {
+            f.style.opacity = '0';
+        })
+    }, 3000);
+</script>
+
+{% endblock %}

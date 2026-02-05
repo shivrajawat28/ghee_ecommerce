@@ -1,0 +1,57 @@
+{% extends "admin/admin_base.html" %}
+{% block content %}
+
+<div class="order-detail-wrapper">
+
+    <h1>Order Details — #{{ order.id }}</h1>
+
+    <!-- Customer Info -->
+    <div class="detail-card">
+        <h3>Customer Information</h3>
+        <p><strong>Name:</strong> {{ order.full_name }}</p>
+        <p><strong>Phone:</strong> {{ order.phone }}</p>
+        <p><strong>Address:</strong> {{ order.address }}, {{ order.city }}, {{ order.state }} - {{ order.pincode }}</p>
+    </div>
+
+    <!-- Order Info -->
+    <div class="detail-card">
+        <h3>Order Information</h3>
+        <p><strong>Status:</strong>
+            <span class="status-badge {{ order.status|lower }}">
+                {{ order.status }}
+            </span>
+        </p>
+        <p><strong>Total Amount:</strong> ₹ {{ order.total_amount }}</p>
+        <p><strong>Date:</strong> {{ order.created_at.strftime('%d %b %Y %I:%M %p') }}</p>
+    </div>
+
+    <!-- Ordered Products -->
+    <div class="detail-card">
+        <h3>Ordered Products</h3>
+
+        <table class="order-items-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in order.items %}
+                <tr>
+                    <td>{{ item.product.title }}</td>
+                    <td>₹ {{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹ {{ item.price * item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

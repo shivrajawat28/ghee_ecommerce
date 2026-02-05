@@ -1,0 +1,60 @@
+{% extends "admin/admin_base.html" %}
+{% block content %}
+
+<div class="admin-container">
+    <h1>Edit Product</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data" class="product-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Product Title</label>
+        <input type="text" name="title" value="{{ product.title }}" required>
+
+        <label>Price (₹)</label>
+        <input type="number" name="price" value="{{ product.price }}" required>
+
+        <label>Description</label>
+        <textarea name="description" rows="5" required>{{ product.description }}</textarea>
+
+        <label>Stock Quantity</label>
+        <input type="number" name="stock" value="{{ product.stock }}" required>
+
+        <label>Current Images</label>
+        <div class="image-preview">
+            {% for img in product.images %}
+                <img src="{{ url_for('static', filename=img.image_path|replace('/static/', '')|replace('static/', '')) }}" alt="Product image">
+            {% endfor %}
+        </div>
+
+        <label>Upload New Images (optional)</label>
+        <input type="file" name="images" multiple>
+
+        <button type="submit" class="btn-primary">Update Product</button>
+    </form>
+</div>
+
+<script>
+    document.querySelector('input[type="file"]').addEventListener('change', function(e){
+        const preview = document.querySelector('.image-preview');
+        preview.innerHTML = "";
+        Array.from(e.target.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(event){
+                const img = document.createElement('img');
+                img.src = event.target.result;
+                preview.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        });
+    });
+    </script>
+
+{% endblock %}

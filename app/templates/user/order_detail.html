@@ -1,0 +1,62 @@
+{% extends "user/user_base.html" %}
+{% block content %}
+
+<div class="user-order-detail">
+
+    <h1>Order Details — #{{ order.id }}</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endwith %}
+
+    <!-- Address -->
+    <div class="detail-card">
+        <h3>Delivery Address</h3>
+        <p><strong>Name:</strong> {{ order.full_name }}</p>
+        <p><strong>Phone:</strong> {{ order.phone }}</p>
+        <p><strong>Address:</strong> {{ order.address }}, {{ order.city }}, {{ order.state }} - {{ order.pincode }}</p>
+    </div>
+
+    <!-- Status -->
+    <div class="detail-card">
+        <h3>Order Status</h3>
+        <span class="order-status {{ order.status|lower }}">
+            {{ order.status|capitalize }}
+        </span>
+        <p><strong>Total:</strong> ₹ {{ order.total_amount }}</p>
+        <p><strong>Date:</strong> {{ order.created_at.strftime('%d %b %Y %I:%M %p') }}</p>
+    </div>
+
+    <!-- Items -->
+    <div class="detail-card">
+        <h3>Items Ordered</h3>
+
+        <table class="order-items-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in order.items %}
+                <tr>
+                    <td>{{ item.product.title }}</td>
+                    <td>₹ {{ item.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹ {{ item.price * item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

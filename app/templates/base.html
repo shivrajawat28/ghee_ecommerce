@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Pure Ghee Store{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='20260204') }}">
+
+</head>
+
+<body>
+
+    <!-- 🔝 Top Announcement -->
+    <div class="top-bar">
+        "Taste the tradition: Pure A2 Ghee. 100% natural, farm-fresh, and crafted for your family’s wellness."
+    </div>
+
+    <!-- 🟢 Header -->
+    <header class="header">
+
+        <!-- Logo -->
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
+            <span>GIROGANIC</span>
+        </div>
+
+        <!-- Hamburger -->
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+
+        <!-- Nav -->
+        <nav class="nav" id="navMenu">
+            <a href="{{ url_for('product.home') }}">Home</a>
+            <a href="{{ url_for('product.get_products') }}">Shop</a>
+            <a href="{{ url_for('product.home') }}#founder">About</a>
+            <a href="{{ url_for('product.blog') }}">Blog</a>
+            <div class="nav-dropdown">
+                <button type="button" class="nav-dropdown-toggle">Contact</button>
+                <div class="nav-dropdown-menu">
+                    <span class="contact-item">Email: support@giroganic.com</span>
+                    <span class="contact-item">Phone: +91 98765 43210</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Right Section -->
+        <div class="right-section">
+
+            <input type="text" placeholder="Search..." class="search">
+
+            <!-- Cart Button -->
+            <div class="cart-icon">
+                {% if session.get('user_id') %}
+                <a href="{{ url_for('cart.view_cart') }}">🛒</a>
+                {% else %}
+                <a href="{{ url_for('auth.login') }}" onclick="alert('Please login first to view cart')">🛒</a>
+                {% endif %}
+            </div>
+
+            <!-- Account -->
+            <div class="account" onclick="toggleAccountMenu()">
+                <img src="{{ url_for('static', filename='images/pfp.png') }}" class="pfp">
+
+                <div class="account-menu" id="accountMenu">
+                    {% if session.get('user_id') %}
+                    <a href="{{ url_for('cart.view_cart') }}">Cart</a>
+                    <a href="{{ url_for('user.profile') }}">Profile</a>
+                    <a href="{{ url_for('user.my_orders') }}">My Orders</a>
+                    <form method="POST" action="{{ url_for('auth.logout') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="link-button">Logout</button>
+                    </form>
+                    {% else %}
+                    <a href="{{ url_for('auth.login') }}">Login</a>
+                    <a href="{{ url_for('auth.register') }}">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">
+            {{ message }}
+            <span class="close-flash" onclick="this.parentElement.remove()">×</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- ✉ Newsletter -->
+    <div class="newsletter">
+        ✉ Subscribe to our newsletter to get regular offers
+    </div>
+
+    <!-- Page Content -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 GheeStore. All Rights Reserved.</p>
+        <p>Contact: support@gheestore.com</p>
+    </footer>
+
+
+    <!-- JS -->
+    <script>
+        function toggleMenu() {
+            document.getElementById("navMenu").classList.toggle("show");
+        }
+
+        function toggleAccountMenu() {
+            document.getElementById("accountMenu").classList.toggle("show-menu");
+        }
+    </script>
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.flash').forEach(el => el.remove());
+        }, 3000);
+    </script>
+
+</body>
+
+</html>

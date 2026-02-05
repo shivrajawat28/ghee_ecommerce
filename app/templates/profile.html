@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Your Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='20260204') }}">
+</head>
+
+<body class="profile-body">
+
+    <div class="profile-wrapper">
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="profile-card">
+            <h1>Your Profile</h1>
+
+            <div class="profile-info">
+                <div class="info-row">
+                    <span>Name:</span>
+                    <p>{{ user.name }}</p>
+                </div>
+
+                <div class="info-row">
+                    <span>Email:</span>
+                    <p>{{ user.email }}</p>
+                </div>
+
+                <div class="info-row">
+                    <span>Phone:</span>
+                    <p>
+                        {% if user.phone %}
+                        {{ user.phone }}
+                        {% else %}
+                        Not added
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <a href="{{ url_for('user.edit_profile') }}" class="btn">Edit Profile</a>
+                <a href="{{ url_for('user.my_orders') }}" class="btn">My Orders</a>
+                <a href="{{ url_for('product.home') }}" class="btn light">Home</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.flash').forEach(f => {
+                f.style.opacity = '0';
+            })
+        }, 3000);
+    </script>
+
+</body>
+
+</html>

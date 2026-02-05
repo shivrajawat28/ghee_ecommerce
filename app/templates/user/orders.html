@@ -1,0 +1,56 @@
+{% extends "user/user_base.html" %}
+{% block content %}
+
+<div class="orders-wrapper">
+
+    <h1>My Orders</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endwith %}
+
+    {% if orders %}
+    <table class="user-orders-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>View</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>#{{ order.id }}</td>
+                <td>{{ order.created_at.strftime('%d %b %Y') }}</td>
+                <td>₹ {{ order.total_amount }}</td>
+
+                <td>
+                    <span class="order-status {{ order.status|lower }}">
+                        {{ order.status|capitalize }}
+                    </span>
+                </td>
+
+                <td>
+                    <a href="{{ url_for('user.order_details', order_id=order.id) }}" class="view-order-btn">
+                        View
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+    <p>No orders placed yet.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

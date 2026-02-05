@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero-banner">
+    <img src="{{ url_for('static', filename='images/hero_image.png') }}"
+        data-fallback="{{ url_for('static', filename='images/logo.png') }}" onerror="this.src=this.dataset.fallback;"
+        alt="Hero banner">
+</section>
+
+
+<!-- OUR PRODUCTS -->
+<section class="products-section" id="shop">
+    <h2>Our Products</h2>
+
+    <div class="product-cards">
+        {% for product in products %}
+        <div class="card">
+            <a href="{{ url_for('product.product_detail', id=product.id) }}">
+                {% if product.images %}
+                <img src="{{ url_for('static', filename=product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}"
+                    alt="{{ product.title }}">
+                {% else %}
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="{{ product.title }}">
+                {% endif %}
+            </a>
+
+            <h3>{{ product.title }}</h3>
+            <p>{{ product.description[:80] if product.description else '' }}...</p>
+            <div class="qty">₹ {{ product.price }}</div>
+
+            <div class="btns">
+                <form method="POST" action="{{ url_for('cart.add_cart', product_id=product.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit">Add to Cart</button>
+                </form>
+
+                <form method="POST" action="{{ url_for('cart.buy_now', product_id=product.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="buy">Buy Now</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+
+<!-- INSTAGRAM -->
+<section class="insta-section">
+    <h2>Connect us on Instagram</h2>
+
+    <div class="insta-grid">
+        <a href="https://instagram.com" target="_blank">
+            <img src="{{ url_for('static', filename='images/reel1.jpg') }}"
+                data-fallback="{{ url_for('static', filename='images/logo.png') }}"
+                onerror="this.src=this.dataset.fallback;">
+        </a>
+        <a href="https://instagram.com" target="_blank">
+            <img src="{{ url_for('static', filename='images/reel2.jpg') }}"
+                data-fallback="{{ url_for('static', filename='images/logo.png') }}"
+                onerror="this.src=this.dataset.fallback;">
+        </a>
+        <a href="https://instagram.com" target="_blank">
+            <img src="{{ url_for('static', filename='images/reel3.jpg') }}"
+                data-fallback="{{ url_for('static', filename='images/logo.png') }}"
+                onerror="this.src=this.dataset.fallback;">
+        </a>
+    </div>
+</section>
+
+
+<!-- ABOUT / FOUNDER -->
+<section class="founder" id="founder">
+    <div class="founder-box">
+        <img src="{{ url_for('static', filename='images/founder.jpg') }}">
+        <div class="founder-text">
+            <h2>Our Founder</h2>
+            <p>
+                Traditional bilona method, village sourced milk, zero chemicals.
+                Bringing purity back to Indian kitchens.
+            </p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

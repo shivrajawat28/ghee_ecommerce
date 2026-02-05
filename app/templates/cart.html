@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="cart-container">
+
+    <h2 class="cart-title">Your Cart</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, msg in messages %}
+    <div class="flash {{ category }}">{{ msg }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+{% if items and items|length > 0 %}
+
+    <div class="cart-table">
+
+        <div class="cart-head">
+            <span>Product</span>
+            <span>Price</span>
+            <span>Quantity</span>
+            <span>Total</span>
+            <span>Action</span>
+        </div>
+
+        {% for item in items %}
+        <div class="cart-row">
+            <div class="cart-product">
+                {% if item.product.images %}
+                <img src="{{ url_for('static', filename=item.product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}" alt="{{ item.product.title }}">
+                {% else %}
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="{{ item.product.title }}">
+                {% endif %}
+                <div>
+                    <h4>{{ item.product.title }}</h4>
+                    <p>₹ {{ item.product.price }}</p>
+                </div>
+            </div>
+
+            <div>₹ {{ item.product.price }}</div>
+
+            <div class="qty-box">
+                <form method="POST" action="{{ url_for('cart.update_quantity', item_id=item.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
+                    <button type="submit">Update</button>
+                </form>
+            </div>
+
+            <div id="total-{{ item.id }}">
+                ₹ {{ item.product.price * item.quantity }}
+            </div>
+
+            <div>
+                <form method="POST" action="{{ url_for('cart.remove_item', item_id=item.id) }}" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="remove-btn">Remove</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="cart-summary">
+        <h3>Total: ₹ {{ total }}</h3>
+        <a href="{{ url_for('order.checkout') }}" class="checkout-btn">
+            Proceed to Checkout
+        </a>
+    </div>
+
+    {% else %}
+
+    <div class="empty-cart">
+        <h3>Your cart is empty 🛒</h3>
+        <button class="shop-btn" onclick="goShop()">Shop Now</button>
+    </div>
+
+    {% endif %}
+
+</div>
+
+<script>
+    function goShop() {
+        window.location.href = "{{ url_for('product.get_products') }}";
+    }
+</script>
+
+{% endblock %}

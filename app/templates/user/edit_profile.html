@@ -1,0 +1,33 @@
+{% extends "user/user_base.html" %}
+{% block content %}
+
+<div class="edit-profile-wrapper">
+
+    <h1>Edit Profile</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endwith %}
+
+    <form method="POST" class="edit-profile-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label>Name</label>
+        <input type="text" name="name" value="{{ user.name }}" required>
+
+        <label>Email (cannot change)</label>
+        <input type="email" value="{{ user.email }}" disabled>
+
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ user.phone if user.phone else '' }}">
+
+        <button type="submit" class="save-btn">Save Changes</button>
+
+    </form>
+
+</div>
+
+{% endblock %}

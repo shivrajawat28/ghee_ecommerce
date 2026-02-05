@@ -1,0 +1,72 @@
+{% extends "user/user_base.html" %}
+{% block content %}
+
+<div class="order-detail-container">
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <h1>Order Details</h1>
+
+    <div class="order-summary">
+        <p><strong>Order ID:</strong> #{{ order.id }}</p>
+        <p><strong>Date:</strong> {{ order.created_at.strftime('%d %b %Y, %I:%M %p') }}</p>
+        <p><strong>Status:</strong>
+            <span class="status {{ order.status|lower }}">{{ order.status|capitalize }}</span>
+        </p>
+        <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
+    </div>
+
+    <h2>Items in this Order</h2>
+
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Image</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.product.title }}</td>
+                <td>
+                    {% if item.product.images %}
+                    <img src="{{ url_for('static', filename=item.product.images[0].image_path|replace('/static/', '')|replace('static/', '')) }}" alt="{{ item.product.title }}">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="{{ item.product.title }}">
+                    {% endif %}
+                </td>
+                <td>₹{{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>₹{{ item.price * item.quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="back-btn">
+        <a href="{{ url_for('user.my_orders') }}">← Back to Orders</a>
+    </div>
+
+</div>
+
+<script>
+    // Simple fade for flash
+    setTimeout(() => {
+        document.querySelectorAll('.flash').forEach(el => {
+            el.style.opacity = '0';
+        });
+    }, 3000);
+</script>
+
+{% endblock %}
